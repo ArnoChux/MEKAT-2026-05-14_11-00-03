@@ -11,14 +11,18 @@ import { createPrototypeCombatState } from "../src/combat/prototype-fixtures.mjs
 const random = createSeededRandom(42);
 
 let state = createPrototypeCombatState();
+const maxRounds = 20;
 
-state = startRound(state, { random });
-state = queueAction(state, "robot-player", SKILL_IDS.ATTACK, "drone-enemy");
-state = queueEnemyActions(state, { random });
-state = resolveRound(state, { random });
+while (state.result.status === "ongoing" && state.round < maxRounds) {
+  state = startRound(state, { random });
+  state = queueAction(state, "robot-player", SKILL_IDS.ATTACK, "drone-enemy");
+  state = queueEnemyActions(state, { random });
+  state = resolveRound(state, { random });
+}
 
 console.log(JSON.stringify({
   round: state.round,
+  stoppedByRoundLimit: state.result.status === "ongoing" && state.round >= maxRounds,
   result: state.result,
   combatants: state.combatants.map((combatant) => ({
     id: combatant.id,

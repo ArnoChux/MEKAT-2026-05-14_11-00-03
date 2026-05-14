@@ -9,6 +9,8 @@ namespace Mekat.Combat
         [SerializeField] private AiStyle enemyStyle = AiStyle.Aggressive;
         [SerializeField] private SkillId playerAction = SkillId.Attack;
         [SerializeField] private bool runOnStart = true;
+        [SerializeField] private bool runFullCombatOnStart = true;
+        [SerializeField] private int maxRounds = 20;
         [SerializeField] private int seed = 42;
 
         private CombatState state;
@@ -17,7 +19,14 @@ namespace Mekat.Combat
         {
             if (runOnStart)
             {
-                RunOneRound();
+                if (runFullCombatOnStart)
+                {
+                    RunFullPrototypeCombat();
+                }
+                else
+                {
+                    RunOneRound();
+                }
             }
         }
 
@@ -35,12 +44,54 @@ namespace Mekat.Combat
             Debug.Log(BuildCombatReport(state));
         }
 
-        private static string BuildCombatReport(CombatState combatState)
+        [ContextMenu("Run Full Prototype Combat")]
+        public void RunFullPrototypeCombat()
+        {
+            var random = new SeededCombatRandom((uint)seed);
+            var roundLimit = maxRounds < 1 ? 1 : maxRounds;
+
+            state = CombatPrototypeFixtures.CreatePrototypeCombatState(enemyStyle);
+
+            while (state.Result.Status == CombatResultStatus.Ongoing && state.Round < roundLimit)
+            {
+                state = CombatCore.StartRound(state, random.Next01);
+
+                if (CombatCore.FindCombatant(state, "robot-player").IsAlive
+                    && CombatCore.FindCombatant(state, "drone-enemy").IsAlive)
+                {
+                    state = CombatCore.QueueAction(
+                        state,
+                        "robot-player",
+                        playerAction,
+                        GetPlayerTargetId(playerAction));
+                }
+
+                state = CombatCore.QueueEnemyActions(state, random.Next01);
+                state = CombatCore.ResolveRound(state, random.Next01);
+            }
+
+            Debug.Log(BuildCombatReport(state, roundLimit));
+        }
+
+        private static string GetPlayerTargetId(SkillId skillId)
+        {
+            return skillId == SkillId.Defend ? "robot-player" : "drone-enemy";
+        }
+
+        private static string BuildCombatReport(CombatState combatState, int? roundLimit = null)
         {
             var builder = new StringBuilder();
             builder.AppendLine("=== Mekat Combat Prototype ===");
             builder.AppendLine("Round: " + combatState.Round);
             builder.AppendLine("Result: " + combatState.Result.Status);
+
+            if (roundLimit.HasValue
+                && combatState.Result.Status == CombatResultStatus.Ongoing
+                && combatState.Round >= roundLimit.Value)
+            {
+                builder.AppendLine("Stopped: max round limit reached.");
+            }
+
             builder.AppendLine();
             builder.AppendLine("Combatants");
 

@@ -70,4 +70,6 @@ La simulation affiche l'état final du round et le journal complet des événeme
 2. Créer un GameObject vide dans une scène.
 3. Ajouter le composant `CombatDebugRunner`.
 4. Lancer Play.
-5. Lire le rapport du round dans la Console Unity.
+5. Lire le rapport du combat dans la Console Unity.
+
+Par défaut, le runner lance un combat complet jusqu'à victoire/défaite, avec une limite de sécurité `Max Rounds`. Le menu contextuel du composant permet aussi de lancer un seul round pour inspecter la résolution pas à pas.

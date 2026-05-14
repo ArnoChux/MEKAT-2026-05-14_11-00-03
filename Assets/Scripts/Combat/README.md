@@ -16,9 +16,14 @@ Ce dossier contient le port C# du noyau de combat V1 pour Unity.
 3. Créer un GameObject vide dans la scène.
 4. Ajouter le composant `CombatDebugRunner`.
 5. Lancer Play.
-6. Lire le rapport de combat dans la Console Unity.
+6. Lire le rapport de combat complet dans la Console Unity.
 
-Le menu contextuel du composant permet aussi de lancer `Run One Prototype Round`.
+Par défaut, le runner lance plusieurs rounds jusqu'à victoire/défaite ou jusqu'à `Max Rounds`.
+
+Le menu contextuel du composant permet aussi de lancer :
+
+- `Run One Prototype Round` pour inspecter un seul round.
+- `Run Full Prototype Combat` pour simuler tout le combat.
 
 ## Règles portées
 
