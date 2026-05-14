@@ -69,7 +69,10 @@ La simulation affiche l'état final du round et le journal complet des événeme
 1. Ouvrir le projet dans Unity après avoir récupéré la branche.
 2. Créer un GameObject vide dans une scène.
 3. Ajouter le composant `CombatDebugRunner`.
-4. Lancer Play.
-5. Lire le rapport du combat dans la Console Unity.
+4. Laisser `Run Mode` sur `Player Choice`.
+5. Lancer Play.
+6. Choisir `Attaque`, `Défense` ou `Taunt` dans la Game view.
 
-Par défaut, le runner lance un combat complet jusqu'à victoire/défaite, avec une limite de sécurité `Max Rounds`. Le menu contextuel du composant permet aussi de lancer un seul round pour inspecter la résolution pas à pas.
+Le mode `Player Choice` affiche les combattants, les boutons d'action joueur et les derniers événements de combat. Après chaque choix joueur, l'ennemi choisit son action, le round se résout, puis le round suivant attend un nouveau choix.
+
+Le mode `Full Auto` lance un combat complet jusqu'à victoire/défaite, avec une limite de sécurité `Max Rounds`. Le menu contextuel du composant permet aussi de lancer un seul round pour inspecter la résolution pas à pas.
